@@ -8,6 +8,7 @@ from scrapy.http import Request
 from redis import StrictRedis, ConnectionPool
 
 from .. import settings
+from ..items import MemberItem
 
 
 class MemberSpider(scrapy.Spider):
@@ -22,7 +23,7 @@ class MemberSpider(scrapy.Spider):
 
     @staticmethod
     def gen_uid():
-        for uid in range(10):
+        for uid in range(1, 100001):
             yield uid
 
     def parse(self, response):
@@ -32,15 +33,20 @@ class MemberSpider(scrapy.Spider):
         pool = ConnectionPool.from_url(redis_url)
         redis_client = StrictRedis(connection_pool=pool)
         for uid in list_uid:
-            redis_client.sadd('uuid', uid)
-        len_uuid = redis_client.scard('uuid')
+            redis_client.sadd('crawl_uid', uid)
+        len_uuid = redis_client.scard('crawl_uid')
         while len_uuid > 0:
             len_uuid -= 1
-            uid = redis_client.spop('uuid').decode("utf-8")
-            print("spop uid===%s, type(uid)===%s" % (uid, type(uid)))
+            uid = redis_client.spop('crawl_uid').decode("utf-8")
+            # print("spop uid===%s, type(uid)===%s" % (uid, type(uid)))
             url = base_url.format(uid=uid)
-            yield Request(url=url, callback=self.parse_uid)
+            yield Request(url=url, callback=self.parse_uid, meta={'uid': uid})
 
     def parse_uid(self, response):
-        print(response.xpath('//title/text()').extract_first())
+        item = MemberItem()
+        item["name"] = response.xpath('//title/text()').extract_first()
+        item['uid'] = response.meta.get('uid', 'uid')
+        yield item
+
+
 

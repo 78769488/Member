@@ -19,7 +19,7 @@ BOT_NAME = 'Member'
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 
-# 设置重爬
+# 设置重启时是否重新爬取
 SCHEDULER_FLUSH_ON_START = False
 
 SPIDER_MODULES = ['Member.spiders']
@@ -99,9 +99,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    'Member.pipelines.MemberPipeline': 300,
-# }
+ITEM_PIPELINES = {
+   'Member.pipelines.MemberPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -126,7 +126,8 @@ DOWNLOADER_MIDDLEWARES = {
 
 # 配置Redis连接方式
 # REDIS_URL = "redis://:foobared@127.0.0.1:6379/db"
-REDIS_URL = "redis://@127.0.0.1:6379/1"
+REDIS_URL = "redis://:memberbared@106.12.31.46:6379/1"
+# REDIS_URL = "redis://@127.0.0.1:6379/1"
 
 # 单爬虫的最大并行请求数
-# CONCURRENT_REQUESTS_PER_SPIDER = 4
+CONCURRENT_REQUESTS_PER_SPIDER = 4
