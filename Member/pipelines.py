@@ -5,8 +5,8 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import os
-import json
-from scrapy.mail import MailSender
+# import json
+# from scrapy.mail import MailSender
 from redis import StrictRedis, ConnectionPool
 
 
